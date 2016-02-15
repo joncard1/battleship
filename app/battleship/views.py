@@ -1,6 +1,8 @@
 from pyramid.view import view_config
 import json
 from battleship.gamestates import PlaceShip
+from battleship.boardstate import BoardState
+from battleship.strategies import EnemyStrategy, SmarterEnemy
 
 ERROR_STATE = 0
 WIN_STATE = 1
@@ -13,16 +15,18 @@ def my_view(request):
 @view_config(route_name='start', renderer='templates/start.pt')
 def start(request):
     session = request.session
-    session['state'] = PlaceShip()
+    boardstate = BoardState()
+    strategy = SmarterEnemy()
+    session['state'] = PlaceShip(boardstate, strategy)
     # TODO: Instantiate opposing strategy
     return {'success': json.dumps(True)}
 
 @view_config(route_name='place_ship', renderer='templates/place_ship.pt')
 def place_ship(request):
-    ship_type = request.params['type']
+    ship_type = int(request.params['type'])
     base_x = int(request.params['base_x'])
     base_y = int(request.params['base_y'])
-    orientation = request.params['orientation']
+    orientation = int(request.params['orientation'])
     session = request.session
     state = session['state']
     new_state = state.place_ship(ship_type, base_x, base_y, orientation)
@@ -41,8 +45,8 @@ def place_ship(request):
 @view_config(route_name='shoot', renderer='templates/shoot.pt')
 def shoot(request):
     # Get the coordinates
-    x = request.params['x']
-    y = request.params['y']
+    x = int(request.params['x'])
+    y = int(request.params['y'])
 
     # TODO: Evaluate if hit
     session = request.session
