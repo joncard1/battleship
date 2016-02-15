@@ -44,6 +44,7 @@ class PlaceShip(GameState):
 class Shoot(GameState):
     success = True
     start = True
+    end = "false"
 
     def __init__(self, boardstate, strategy):
         self._boardstate = boardstate
@@ -52,19 +53,26 @@ class Shoot(GameState):
     def shoot(self, x, y):
         self.player_hit = self._boardstate.shoot(boardstate.PLAYER_1, x, y)
         # if player 1 didn't win
+        if self._boardstate.is_player_dead(boardstate.PLAYER_2):
+            return GameWon()
+        
         self.server_shot = self._strategy.get_shot()
         self.server_hit = self._boardstate.shoot(boardstate.PLAYER_2, self.server_shot[0], self.server_shot[1])
         if self.server_hit:
             self._strategy.hit()
         else:
             self._strategy.miss()
-        # if player 2 didn't win
-        self.end = "false"
+        if self._boardstate.is_player_dead(boardstate.PLAYER_1):
+            return GameLost()
+
         return self
     
 
 class GameWon(GameState):
     success = True
+    player_hit = True
+    server_hit = False
+    server_shot = "N/A"
     end = "win"
 
 class GameLost(GameState):

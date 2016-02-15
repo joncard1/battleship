@@ -57,10 +57,6 @@ class BoardState(object):
                     # Ship was placed twice. BAD
                     pass
 
-        #if ship_type in self.players[player]:
-        #   self.players[player][ship_type].append((base_x, base_y, orientation))
-        #else:
-        #self.players[player][ship_type] = [(base_x, base_y, orientation)]
         self.is_full = True
         for player in self.players:
             if len(player['ships']) != 10:
@@ -77,18 +73,21 @@ class BoardState(object):
         if shot_x in target_player['parts']:
             if shot_y in target_player['parts'][shot_x]:
                 if target_player['parts'][shot_x][shot_y].hit:
-                    print "Already hit here"
                     pass # Hit twice
                 else:
-                    print "Hit!"
                     target_player['parts'][shot_x][shot_y].hit = True
                     return True
-            else:
-                print "No parts at %s" % shot_y
-        else:
-            print "No parts at %s" % shot_x
 
         return False
+
+    def is_player_dead(self, player):
+        target_player = self.players[player]
+        for ship in target_player['ships']:
+            for part in ship.parts:
+                if not part.hit:
+                    return False
+
+        return True
 
 class Ship(object):
     parts = []
@@ -100,3 +99,6 @@ class Ship(object):
 
 class ShipPart(object):
     hit = False
+
+    def __str__(self):
+        return hit

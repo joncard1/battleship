@@ -88,3 +88,16 @@ class SmarterEnemy(EnemyStrategy):
         else:
             self.last_hit = None
             self.next_vector = None
+
+class ZOrderStrategy(EnemyStrategy):
+    '''
+    This strategy would order all shots in a z-order index (create a
+    hash of coordinates by interleaving the bits of the x and y index)
+    and use this as the shot identifier. Each turn, the system would find
+    the largest gap in the list of past shots, representing approximately
+    the largest area of whitespace. Locating the center of the gap and
+    choosing a random distance from this center, the strategy would be to
+    fire into the whitespace. The randomness would ensure replayability
+    and prevent the server from playing the same game over and over.
+    '''
+    pass
