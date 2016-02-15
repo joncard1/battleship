@@ -1,0 +1,6 @@
+{
+    "player_hit": ${player_hit},
+    "server_shot": ${server_shot},
+    "server_hit": ${server_hit},
+    "end": ${end}
+}
